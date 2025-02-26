@@ -6,6 +6,9 @@ import * as React from "react";
 import { HeroUIProvider } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { useTranslation, Trans } from 'react-i18next';
+import '../config/in18';
+import { Suspense } from 'react';
 
 export interface ProvidersProps {
   children: React.ReactNode;
@@ -22,10 +25,15 @@ declare module "@react-types/shared" {
 
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
+  const { t } = useTranslation();
 
   return (
     <HeroUIProvider navigate={router.push}>
-      <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+      <NextThemesProvider {...themeProps}>
+        <Suspense fallback="loading">
+          {children}
+        </Suspense>
+      </NextThemesProvider>
     </HeroUIProvider>
   );
 }

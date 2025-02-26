@@ -24,6 +24,11 @@ export const SidePanel = () => {
         <div className="flex flex-col gap-4 h-full overflow-y-auto mx-2 flex-shrink-0 [&>button]:flex-shrink-0">
             <Button size="sm" isIconOnly aria-label="Like" className="flex-shrink-0">
                 <FontAwesomeIcon
+                    icon={faRotate}
+                />
+            </Button>
+            <Button size="sm" isIconOnly aria-label="Like" className="flex-shrink-0">
+                <FontAwesomeIcon
                     icon={faArrowUp}
                 />
             </Button>
@@ -37,11 +42,6 @@ export const SidePanel = () => {
             </Button>
             <Button size="sm" isIconOnly aria-label="Like" color={scrollToEnd ? "primary" : "default"} onPress={handleScrollToEnd} className="flex-shrink-0">
                 <ScrollToEndIcon />
-            </Button>
-            <Button size="sm" isIconOnly aria-label="Like" className="flex-shrink-0">
-                <FontAwesomeIcon
-                    icon={faRotate}
-                />
             </Button>
             <Button size="sm" isIconOnly aria-label="Like" className="flex-shrink-0">
                 <FontAwesomeIcon

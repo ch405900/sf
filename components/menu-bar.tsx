@@ -6,6 +6,8 @@ import { MatchCaseIcon, MatchRegexIcon, SearchIcon } from "./icons";
 import { useEffect, useState } from "react";
 import { IconSwitch } from "./match-case-switch";
 import { USB_VENDOR } from "@/config/usbvendor";
+import { useTranslation } from "react-i18next";
+import { useSerial } from "./serial-context";
 
 export const animals = [
     { key: "cat", label: "Cat" },
@@ -46,25 +48,15 @@ const LevelList = [
     { key: "6", label: "Fatal" },
 ];
 
-export const MenuBar = () => {
+export default function MenuBar() {
+    const { t, i18n } = useTranslation();
+
     const sizes = ["sm", "md", "lg"];
     const size = "sm";
     const [matchCase, setMatchCase] = useState(false);
 
-    const [portList, setPortList] = useState<SerialPort[]>([]);
-    const [port, setPort] = useState<SerialPort | null>(null);
+    const { portList, setSelectedPort } = useSerial();
 
-    useEffect(() => {
-        const fetchPorts = async () => {
-            const portList = await navigator.serial.getPorts();
-            setPortList(portList);
-            portList.forEach(async (port) => {
-                const info = await port.getInfo();
-                console.log(info);
-            });
-        };
-        fetchPorts();
-    }, []);
 
     return (
         <div className="flex flex-row gap-4 pl-2">
@@ -72,21 +64,25 @@ export const MenuBar = () => {
                 className="min-w-[120px] w-auto"
                 size={size}
                 placeholder="Port"
+                isDisabled={portList.length == 0}
             >
-                {portList.map((port) => {
-                    const info = port.getInfo();
-                    if (info.usbVendorId && USB_VENDOR.has(info.usbVendorId)) {
-                        const vendor = USB_VENDOR.get(info.usbVendorId);
-                        const name = vendor?.alias;
-                        return <SelectItem key={name}>{name}</SelectItem>
-                    }
-                    return <SelectItem key={info.usbVendorId + ":" + info.usbProductId}>{info.usbVendorId + ":" + info.usbProductId}</SelectItem>;
-                })}
+                {portList.length > 0 ? (
+                    portList.map((port) => {
+                        const info = port.getInfo();
+                        if (info.usbVendorId && USB_VENDOR.has(info.usbVendorId)) {
+                            const vendor = USB_VENDOR.get(info.usbVendorId);
+                            const name = vendor?.alias;
+                            return <SelectItem key={name}>{name}</SelectItem>
+                        }
+                        return <SelectItem key={info.usbVendorId + ":" + info.usbProductId}>{info.usbVendorId + ":" + info.usbProductId}</SelectItem>;
+                    })
+                ) : (<SelectItem key="No Device" >{t('No Device')}</SelectItem>)}
             </Select>
             <Select
                 disableSelectorIconRotation
                 className="min-w-[120px] w-auto"
                 size={size}
+                isDisabled={portList.length == 0}
                 placeholder="BuadRate"
             >
                 {BuadRateList.map((rate) => (
@@ -107,7 +103,8 @@ export const MenuBar = () => {
             </Select>
             <Input
                 size={size}
-                placeholder="过滤"
+                aria-label={t('Filter')}
+                placeholder={t('Filter')}
                 startContent={
                     <SearchIcon className="text-xl text-default-400 pointer-events-none flex-shrink-0" />
                 }

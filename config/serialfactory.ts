@@ -8,9 +8,7 @@ enum DataSourceType {
 interface ConnectionConfig {
     type: DataSourceType;
     baudRate: number;
-    port?: string;
-    host?: string;
-    portNumber?: number;
+    
 }
 
 // 通用数据源接口
