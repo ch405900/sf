@@ -4,8 +4,8 @@
  "private": true,
  "scripts": {
   "dev": "next dev",
-  "build": "next build",
-  "start": "next start",
+  "build": "next-on-pages build",
+  "start": "next-on-pages dev",
   "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
  },
  "dependencies": {
@@ -34,6 +34,7 @@
   "react-i18next": "^15.4.1"
  },
  "devDependencies": {
+  "@cloudflare/next-on-pages": "^1.13.8",
   "@next/eslint-plugin-next": "15.0.4",
   "@react-types/shared": "3.25.0",
   "@types/node": "20.5.7",
