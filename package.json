@@ -4,7 +4,7 @@
  "private": true,
  "scripts": {
   "dev": "next dev",
-  "build": "next-on-pages build",
+  "build": "next-on-pages",
   "start": "next-on-pages dev",
   "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
  },
