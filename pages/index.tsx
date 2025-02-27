@@ -1,9 +1,14 @@
 import { Main } from "@/components/main";
 
-export default function Home() {
+import { appWithTranslation } from 'next-i18next'
+
+
+function Home() {
   return (
     // <ExpandableWindow>
     // </ExpandableWindow>
     <Main ></Main>
   );
 }
+
+export default appWithTranslation(Home)

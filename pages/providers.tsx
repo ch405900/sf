@@ -6,7 +6,6 @@ import { HeroUIProvider } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { Suspense } from 'react';
-import "../config/in18";
 
 export interface ProvidersProps {
   children: React.ReactNode;

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "@heroui/react";
 import { ScrollToEndIcon, SoftWrapIcon } from "./icons";
 import { useState } from "react";
+import { useTranslation } from 'next-i18next';
 
 
 export const SidePanel = () => {
@@ -17,6 +18,7 @@ export const SidePanel = () => {
     const handleSoftWrap = () => {
         setSoftWrap(!softWrap);
     }
+
 
     return (
         <div className="flex flex-col gap-4 h-full overflow-y-auto mx-2 flex-shrink-0 [&>button]:flex-shrink-0">
