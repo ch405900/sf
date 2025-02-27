@@ -6,12 +6,10 @@ import { MatchCaseIcon, MatchRegexIcon, SearchIcon } from "./icons";
 import { useState } from "react";
 import { IconSwitch } from "./match-case-switch";
 import { USB_VENDOR } from "@/config/usbvendor";
-import { useTranslation } from "react-i18next";
 import { useSerial } from "./serial-context";
 import { BuadRateList, LevelList } from "@/config/constants";
 
 export default function MenuBar() {
-    const { t, i18n } = useTranslation();
 
     const _sizes = ["sm", "md", "lg"];
     const size = "sm";
@@ -47,7 +45,7 @@ export default function MenuBar() {
                         }
                         return <SelectItem key={key} data-value={port}>{key}</SelectItem>;
                     })
-                ) : (<SelectItem key="No Device" data-value="No Device">{t('No Device')}</SelectItem>)}
+                ) : (<SelectItem key="No Device" data-value="No Device">{('No Device')}</SelectItem>)}
             </Select>
             <Select
                 disableSelectorIconRotation
@@ -74,8 +72,8 @@ export default function MenuBar() {
             </Select>
             <Input
                 size={size}
-                aria-label={t('Filter')}
-                placeholder={t('Filter')}
+                aria-label={('Filter')}
+                placeholder={('Filter')}
                 startContent={
                     <SearchIcon className="text-xl text-default-400 pointer-events-none flex-shrink-0" />
                 }

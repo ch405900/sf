@@ -2,7 +2,6 @@
 
 import { useSwitch } from "@heroui/react";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
-import { useTranslation } from "react-i18next";
 
 const _lngs = {
     en: { nativeName: 'English' },
