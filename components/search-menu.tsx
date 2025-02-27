@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { Input } from "@heroui/react";
 import { MatchCaseIcon, MatchRegexIcon, MatchWordIcon, SearchIcon } from "./icons";

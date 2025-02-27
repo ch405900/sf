@@ -4,9 +4,10 @@
  "private": true,
  "scripts": {
   "dev": "next dev",
-  "build": "next-on-pages",
-  "start": "next-on-pages dev",
-  "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix"
+  "build": "next build",
+  "start": "next start",
+  "lint": "eslint . --ext .ts,.tsx -c .eslintrc.json --fix",
+  "analyze": "cross-env ANALYZE=true next build"
  },
  "dependencies": {
   "@fortawesome/fontawesome-svg-core": "^6.7.2",
@@ -35,6 +36,7 @@
  },
  "devDependencies": {
   "@cloudflare/next-on-pages": "^1.13.8",
+  "@next/bundle-analyzer": "^15.2.0",
   "@next/eslint-plugin-next": "15.0.4",
   "@react-types/shared": "3.25.0",
   "@types/node": "20.5.7",
@@ -43,6 +45,7 @@
   "@typescript-eslint/eslint-plugin": "^8.25.0",
   "@typescript-eslint/parser": "8.11.0",
   "autoprefixer": "10.4.19",
+  "cross-env": "^7.0.3",
   "eslint": "^9.21.0",
   "eslint-config-next": "15.0.4",
   "eslint-config-prettier": "9.1.0",

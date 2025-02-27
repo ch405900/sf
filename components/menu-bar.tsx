@@ -3,7 +3,7 @@
 import { Input } from "@heroui/react";
 import { Select, SelectItem } from "@heroui/react";
 import { MatchCaseIcon, MatchRegexIcon, SearchIcon } from "./icons";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IconSwitch } from "./match-case-switch";
 import { USB_VENDOR } from "@/config/usbvendor";
 import { useTranslation } from "react-i18next";
@@ -13,9 +13,9 @@ import { BuadRateList, LevelList } from "@/config/constants";
 export default function MenuBar() {
     const { t, i18n } = useTranslation();
 
-    const sizes = ["sm", "md", "lg"];
+    const _sizes = ["sm", "md", "lg"];
     const size = "sm";
-    const [matchCase, setMatchCase] = useState(false);
+    const [_matchCase, _setMatchCase] = useState(false);
 
     const { portList, setSelectedPort } = useSerial();
 

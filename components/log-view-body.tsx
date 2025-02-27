@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { LogRenderer } from "./log-renderer";
 import { SearchBar } from "./searchbar";

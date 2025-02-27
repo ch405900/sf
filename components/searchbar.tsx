@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { SearchMenu } from "./search-menu";
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
