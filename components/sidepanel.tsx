@@ -1,5 +1,3 @@
-"use client";
-
 import { faArrowDown, faArrowUp, faCamera, faRotate, faSave, faTrash, faVideo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "@heroui/react";

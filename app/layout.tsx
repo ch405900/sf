@@ -1,4 +1,5 @@
 import "@/styles/globals.css";
+import "@fortawesome/fontawesome-svg-core/styles.css"; // 处理图标尺寸刷新时候过大,随后加载完毕变小的问题
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 

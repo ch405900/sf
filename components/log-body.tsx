@@ -1,5 +1,3 @@
-"use client";
-
 import { SidePanel } from "./sidepanel";
 import { LogViewBody } from "./log-view-body";
 

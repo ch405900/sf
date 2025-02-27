@@ -1,5 +1,3 @@
-"use client";
-
 import { Input } from "@heroui/react";
 import { Select, SelectItem } from "@heroui/react";
 import { MatchCaseIcon, MatchRegexIcon, SearchIcon } from "./icons";

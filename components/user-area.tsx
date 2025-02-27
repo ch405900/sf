@@ -1,5 +1,3 @@
-"use client";
-
 import { Button, Input } from "@heroui/react";
 
 // 与设备交互的区域

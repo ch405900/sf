@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
+const { i18n } = require('./next-i18next.config')
 const nextConfig = {
-    output: 'export',
+    // output: 'export',
     eslint: {
         ignoreDuringBuilds: true,
     },
@@ -9,11 +10,7 @@ const nextConfig = {
         tsconfigPath: './tsconfig.json'
     },
     staticPageGenerationTimeout: 1800,
-    experimental: {
-        granularChunks: {
-            i18n: 'lazy' // 延迟加载语言包
-        }
-    }
+    i18n, // 👈🏻 合并国际化配置
 };
 
 module.exports = nextConfig;
