@@ -8,45 +8,7 @@ import { IconSwitch } from "./match-case-switch";
 import { USB_VENDOR } from "@/config/usbvendor";
 import { useTranslation } from "react-i18next";
 import { useSerial } from "./serial-context";
-
-export const animals = [
-    { key: "cat", label: "Cat" },
-    { key: "dog", label: "Dog" },
-    { key: "elephant", label: "Elephant" },
-    { key: "lion", label: "Lion" },
-    { key: "tiger", label: "Tiger" },
-    { key: "giraffe", label: "Giraffe" },
-    { key: "dolphin", label: "Dolphin" },
-    { key: "penguin", label: "Penguin" },
-    { key: "zebra", label: "Zebra" },
-    { key: "shark", label: "Shark" },
-    { key: "whale", label: "Whale" },
-    { key: "otter", label: "Otter" },
-    { key: "crocodile", label: "Crocodile" },
-];
-
-export const BuadRateList = [
-    { key: "1200", label: "1200", alias: "1.2kbps" },
-    { key: "2400", label: "2400", alias: "2.4kbps" },
-    { key: "4800", label: "4800", alias: "4.8kbps" },
-    { key: "9600", label: "9600", alias: "9.6kbps" },
-    { key: "19200", label: "19200", alias: "19.2kbps" },
-    { key: "38400", label: "38400", alias: "38.4kbps" },
-    { key: "57600", label: "57600", alias: "57.6kbps" },
-    { key: "115200", label: "115200", alias: "115.2kbps" },
-    { key: "230400", label: "230400", alias: "230.4kbps" },
-    { key: "460800", label: "460800", alias: "460.8kbps" },
-    { key: "921600", label: "921600", alias: "921.6kbps" },
-];
-
-const LevelList = [
-    { key: "1", label: "Verbose" },
-    { key: "2", label: "Debug" },
-    { key: "3", label: "Info" },
-    { key: "4", label: "Warn" },
-    { key: "5", label: "Error" },
-    { key: "6", label: "Fatal" },
-];
+import { BuadRateList, LevelList } from "@/config/constants";
 
 export default function MenuBar() {
     const { t, i18n } = useTranslation();
@@ -57,6 +19,13 @@ export default function MenuBar() {
 
     const { portList, setSelectedPort } = useSerial();
 
+    function onPortChange(e: React.ChangeEvent<HTMLSelectElement>) {
+        const selectedPort = portList.find(port => port.getInfo().usbVendorId + ":" + port.getInfo().usbProductId === e.target.value);
+        if (selectedPort) {
+            setSelectedPort(selectedPort);
+            console.log(`set selected port: ${selectedPort.getInfo().usbVendorId}:${selectedPort.getInfo().usbProductId}`);
+        }
+    }
 
     return (
         <div className="flex flex-row gap-4 pl-2">
@@ -65,18 +34,20 @@ export default function MenuBar() {
                 size={size}
                 placeholder="Port"
                 isDisabled={portList.length == 0}
+                onChange={onPortChange}
             >
                 {portList.length > 0 ? (
                     portList.map((port) => {
                         const info = port.getInfo();
+                        const key = info.usbVendorId + ":" + info.usbProductId;
                         if (info.usbVendorId && USB_VENDOR.has(info.usbVendorId)) {
                             const vendor = USB_VENDOR.get(info.usbVendorId);
                             const name = vendor?.alias;
-                            return <SelectItem key={name}>{name}</SelectItem>
+                            return <SelectItem key={key} data-value={port}>{name}</SelectItem>
                         }
-                        return <SelectItem key={info.usbVendorId + ":" + info.usbProductId}>{info.usbVendorId + ":" + info.usbProductId}</SelectItem>;
+                        return <SelectItem key={key} data-value={port}>{key}</SelectItem>;
                     })
-                ) : (<SelectItem key="No Device" >{t('No Device')}</SelectItem>)}
+                ) : (<SelectItem key="No Device" data-value="No Device">{t('No Device')}</SelectItem>)}
             </Select>
             <Select
                 disableSelectorIconRotation
@@ -86,7 +57,7 @@ export default function MenuBar() {
                 placeholder="BuadRate"
             >
                 {BuadRateList.map((rate) => (
-                    <SelectItem key={rate.key}>
+                    <SelectItem key={rate.key} >
                         {rate.label}
                     </SelectItem>
                 ))}
@@ -98,7 +69,7 @@ export default function MenuBar() {
                 placeholder="Level"
             >
                 {LevelList.map((level) => (
-                    <SelectItem key={level.key}>{level.label}</SelectItem>
+                    <SelectItem key={level.key} >{level.label}</SelectItem>
                 ))}
             </Select>
             <Input
