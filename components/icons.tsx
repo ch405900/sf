@@ -263,7 +263,7 @@ export const MatchWordIcon = ({
 
 
 export const SoftWrapIcon = ({
-  size = 24,
+  size = 16,
   width,
   height,
   ...props
@@ -289,7 +289,7 @@ export const SoftWrapIcon = ({
 
 
 export const ScrollToEndIcon = ({
-  size = 24,
+  size = 16,
   width,
   height,
   ...props

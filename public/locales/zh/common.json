@@ -2,6 +2,19 @@
   "welcome": "欢迎来到我的网站",
   "label": {
     "Filter": "过滤",
-    "Search": "搜索"
-  }
+    "Search": "搜索",
+    "Port": "端口号",
+    "BuadRate": "波特率",
+    "Level":"级别"
+  },
+  "selectPortToViewLogs": "请选择一个端口查看日志",
+  "noLogsAvailable": "此端口暂无日志",
+  "availableSerialPorts": "可用的串行端口",
+  "noSerialPortsDetected": "未检测到串行端口。点击上方按钮以授予串行端口访问权限。",
+  "serialPort": "串行端口",
+  "loadingSerialPorts": "正在加载串行端口...",
+  "requestPorts": "请求串行端口访问权限",
+  "requestingPorts": "正在请求端口访问权限...",
+  "connectedTo": "已连接到",
+  "disconnect": "断开连接"
 }

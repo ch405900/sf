@@ -2,6 +2,19 @@
   "welcome": "Welcome to my website",
   "label": {
     "Filter": "Filter",
-    "Search": "Search"
-  }
+    "Search": "Search",
+    "Port": "Port",
+    "BuadRate": "BuadRate",
+    "Level": "Level"
+  },
+  "selectPortToViewLogs": "Select a port to view logs",
+  "noLogsAvailable": "No logs available for this port",
+  "availableSerialPorts": "Available Serial Ports",
+  "noSerialPortsDetected": "No serial ports detected. Click the button above to grant access to serial ports.",
+  "serialPort": "Serial Port",
+  "loadingSerialPorts": "Loading serial ports...",
+  "requestPorts": "Request Serial Port Access",
+  "requestingPorts": "Requesting port access...",
+  "connectedTo": "Connected to",
+  "disconnect": "Disconnect"
 }

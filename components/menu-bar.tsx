@@ -31,7 +31,7 @@ export default function MenuBar() {
             <Select
                 className="min-w-[120px] w-auto"
                 size={size}
-                placeholder="Port"
+                placeholder={t("label.Port")}
                 isDisabled={portList.length == 0}
                 onChange={onPortChange}
             >
@@ -53,7 +53,7 @@ export default function MenuBar() {
                 className="min-w-[120px] w-auto"
                 size={size}
                 isDisabled={portList.length == 0}
-                placeholder="BuadRate"
+                placeholder={t("label.BuadRate")}
             >
                 {BuadRateList.map((rate) => (
                     <SelectItem key={rate.key} >
@@ -63,9 +63,9 @@ export default function MenuBar() {
             </Select>
             <Select
                 disableSelectorIconRotation
-                className="min-w-[100px] w-auto"
+                className="min-w-[120px] w-auto"
                 size={size}
-                placeholder="Level"
+                placeholder={t("label.Level")}
             >
                 {LevelList.map((level) => (
                     <SelectItem key={level.key} >{level.label}</SelectItem>
