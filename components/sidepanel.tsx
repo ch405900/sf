@@ -3,8 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button } from "@heroui/react";
 import { ScrollToEndIcon, SoftWrapIcon } from "./icons";
 import { useState } from "react";
-import { useTranslation } from 'next-i18next';
-
 
 export const SidePanel = () => {
 

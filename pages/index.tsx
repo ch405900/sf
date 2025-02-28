@@ -1,9 +1,7 @@
-import { Main } from "@/components/main";
+import { Main } from '@/components/main';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
-import { appWithTranslation } from 'next-i18next'
-
-
-function Home() {
+export default function IndexPage() {
   return (
     // <ExpandableWindow>
     // </ExpandableWindow>
@@ -11,4 +9,10 @@ function Home() {
   );
 }
 
-export default appWithTranslation(Home)
+export async function getStaticProps({ locale }: { locale: string }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
+}

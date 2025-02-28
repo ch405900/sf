@@ -3,17 +3,17 @@
 import { Input } from "@heroui/react";
 import { MatchCaseIcon, MatchRegexIcon, MatchWordIcon, SearchIcon } from "./icons";
 import { IconSwitch } from "./match-case-switch";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 
 export const SearchMenu = () => {
     const size = "sm";
-    const { t } = useTranslation('label');
+    const { t } = useTranslation('common');
 
     return (
         <div className="flex-grow">
             <Input
                 size={size}
-                placeholder={t('Search')}
+                placeholder={t('label.Search')}
                 startContent={
                     <div className="flex flex-row gap-1">
                         <SearchIcon className="text-xl text-default-400 pointer-events-none flex-shrink-0" />

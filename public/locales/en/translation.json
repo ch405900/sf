@@ -1,9 +1,0 @@
-{
-    "welcome": "Welcome to my website",
-    "author": "Author is: <1>Code and Beast</1>",
-    "currentTime": "Current time is {{time, YYYY-MM-DD}}",
-    "label": {
-        "Filter": "Filter",
-        "Search": "Search"
-    }
-}

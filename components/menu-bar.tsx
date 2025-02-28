@@ -3,11 +3,10 @@ import { Select, SelectItem } from "@heroui/react";
 import { MatchCaseIcon, MatchRegexIcon, SearchIcon } from "./icons";
 import { useState } from "react";
 import { IconSwitch } from "./match-case-switch";
-import { USB_VENDOR } from "@/config/usbvendor";
 import { useSerial } from "./serial-context";
-import { BuadRateList, LevelList } from "@/config/constants";
-import { useTranslation } from 'next-i18next';
-
+import { useTranslation } from "next-i18next";
+import { BuadRateList, LevelList } from "@/model/constants";
+import { USB_VENDOR } from "@/model/usbvendor";
 
 export default function MenuBar() {
 
@@ -16,7 +15,7 @@ export default function MenuBar() {
     const [_matchCase, _setMatchCase] = useState(false);
 
     const { portList, setSelectedPort } = useSerial();
-    const { t } = useTranslation('label');
+    const { t } = useTranslation('common');
 
 
     function onPortChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -74,8 +73,8 @@ export default function MenuBar() {
             </Select>
             <Input
                 size={size}
-                aria-label={t("Filter")}
-                placeholder={t('Filter')}
+                aria-label={t("label.Filter")}
+                placeholder={t('label.Filter')}
                 startContent={
                     <SearchIcon className="text-xl text-default-400 pointer-events-none flex-shrink-0" />
                 }

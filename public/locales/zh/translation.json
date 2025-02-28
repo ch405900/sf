@@ -1,9 +1,0 @@
-{
-  "welcome": "欢迎来到我的网站",
-  "author": "作者是：<1>代码与野兽</1>",
-  "currentTime": "当前时间是 {{time, YYYY-MM-DD}}",
-  "label": {
-    "Filter": "过滤",
-    "Search": "搜索"
-  }
-}

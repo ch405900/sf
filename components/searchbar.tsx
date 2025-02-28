@@ -4,8 +4,6 @@ import { SearchMenu } from "./search-menu";
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button } from "@heroui/react";
-import { useTranslation } from "react-i18next";
-
 
 export const SearchBar = () => {
 
