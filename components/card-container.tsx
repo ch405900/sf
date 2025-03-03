@@ -102,52 +102,49 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
 
   const handleConnection = async () => {
     const currentTime = Date.now();
-    console.log(`handleConnection ${currentTime} ${currentTime - lastConnectionTime}`);
     if (currentTime - lastConnectionTime < 1500) {
       console.log(`too fast`);
-      return; // Prevent further execution if less than 1 second has passed
+      return;
     }
-    console.log(`set lastConnectionTime to ${currentTime}`);
-    console.log(`after set lastConnectionTime = ${lastConnectionTime}`);
     setLastConnectionTime(currentTime);
     try {
       if (selectedPort && openedPorts.has(selectedPort)) {
         // 端口已打开，执行断开操作
         const success = await closePort(selectedPort);
         if (success) {
-          showToast(t("disconnectSuccess", "Disconnect Success"), t("disconnectSuccessDesc", "You have successfully disconnected from the serial port."));
+          toastDisconnectSuccess();
         } else {
-          showToast(t("disconnectFailed", "Disconnect Failed"), t("disconnectFailedDesc", "Failed to disconnect from the serial port."));
+          toastDisconnectFailed();
         }
       } else if (selectedPort) {
         // 端口已选择但未打开，执行连接操作
         const success = await openPort(selectedPort);
         if (success) {
-          showToast(t("connectSuccess", "Connect Success"), t("connectSuccessDesc", "You have successfully connected to the serial port."));
+          toastConnectionSuccess();
         } else {
-          showToast(t("connectFailed", "Connect Failed"), t("connectFailedDesc", "Failed to connect to the serial port."));
+          toastConnectionFailed();
         }
       } else if (selectedPort) {
         // 端口已选择但未打开，执行连接操作
         const success = await openPort(selectedPort);
         if (success) {
-          showToast(t("connectSuccess", "Connect Success"), `${t("connectSuccessDesc", "You have successfully connected to")} ${deviceName}`);
+          toastConnectionSuccess();
         } else {
-          showToast(t("connectFailed", "Connect Failed"), t("connectFailedDesc", "Failed to connect to the serial port."));
+          toastConnectionFailed();
         }
       } else if (portList.length === 1) {
         // 如果只有一个端口且未选择，直接连接它
-        setSelectedPort(portList[0]);
+        /* setSelectedPort(portList[0]);
         const success = await openPort(portList[0]);
         if (success) {
           showToast(t("connectSuccess", "Connect Success"), `${t("connectSuccessDesc", "You have successfully connected to")} ${deviceName}`);
         } else {
           showToast(t("connectFailed", "Connect Failed"), t("connectFailedDesc", "Failed to connect to the serial port."));
-        }
+        } */
       }
     } catch (error) {
       console.error("Error during port operation:", error);
-      showToast(t("error", "Error"), t("operationFailed", "Operation failed. Please try again."));
+      toastConnectionError();
     }
   }
 
@@ -159,6 +156,24 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
       timeout,
       shouldShowTimeoutProgess,
     });
+  }
+
+  const toastConnectionError = () => {
+    showToast(t("error", "Error"), t("operationFailed", "Operation failed. Please try again."));
+  }
+
+  const toastConnectionSuccess = () => {
+    showToast(t("connectSuccess", "Connect Success"), t("connectSuccessDesc", "You have successfully connected to the serial port."));
+  }
+  const toastConnectionFailed = () => {
+    showToast(t("connectFailed", "Connect Failed"), t("connectFailedDesc", "Failed to connect to the serial port."));
+  }
+
+  const toastDisconnectSuccess = () => {
+    showToast(t("disconnectSuccess", "Disconnect Success"), t("disconnectSuccessDesc", "You have successfully disconnected from the serial port."));
+  }
+  const toastDisconnectFailed = () => {
+    showToast(t("disconnectFailed", "Disconnect Failed"), t("disconnectFailedDesc", "Failed to disconnect from the serial port."));
   }
 
 

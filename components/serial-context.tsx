@@ -243,12 +243,6 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     // Watch for changes to selectedPort
     useEffect(() => {
-        // 不再自动打开端口
-        // if (selectedPort) {
-        //     // Automatically open the port with default baud rate when selected
-        //     openPort(selectedPort, parseInt(DEFAULT_BAUD_RATE));
-        // }
-
         // Clean up function
         return () => {
             if (selectedPort) {
