@@ -3,11 +3,10 @@
 import { useSerial } from "./serial-context";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "next-i18next";
-import { Button } from "@heroui/react";
 
 // 日志渲染器,
 export const LogRenderer = () => {
-    const { selectedPort, setSelectedPort, portLogs, portList, reloadPortList } = useSerial();
+    const { selectedPort, setSelectedPort, portLogs, portList, reloadPortList, openedPorts } = useSerial();
     const { t } = useTranslation("common");
     const logContainerRef = useRef<HTMLDivElement>(null);
     const [isClient, setIsClient] = useState(false);
@@ -34,6 +33,9 @@ export const LogRenderer = () => {
 
     // Get logs for the selected port
     const currentLogs = selectedPort ? portLogs.get(selectedPort) || [] : [];
+
+    // Determine if we should show logs based on port selection and connection state
+    const shouldShowLogs = selectedPort && openedPorts.has(selectedPort);
 
     // Request user to select a serial port
     const handleRequestPort = async () => {
@@ -75,7 +77,7 @@ export const LogRenderer = () => {
                 <div className="text-gray-500 flex flex-col items-center justify-center h-full">
                     {/* Request port message - buttons moved to card header */}
                     <div className="mb-4">{t("selectSerialPort", "Select a serial port to view logs")}</div>
-                    
+
                     {portList.length > 0 && <div className="mb-4">{t("availableSerialPorts")}</div>}
                     {!isClient ? (
                         <div>{t("loadingSerialPorts")}</div>
@@ -117,32 +119,23 @@ export const LogRenderer = () => {
                 </div>
             )}
 
-            {selectedPort && (
+            {selectedPort && shouldShowLogs && (
                 <div className="flex flex-col h-full">
-                    <div className="flex justify-between items-center mb-2 pb-2 border-b">
-                        <div className="font-medium">
-                            {t("connectedTo", "Connected to")}:
-                            <span className="text-blue-600 ml-2">
-                                {t("serialPort", "Serial Port")}
-                                {portList.indexOf(selectedPort) + 1} (115200 baud)
-                            </span>
-                        </div>
-                        {/* Disconnect button moved to card header */}
+                    <div className="flex-1 overflow-auto">
+                        {currentLogs.length === 0 ? (
+                            <div className="text-gray-500 flex items-center justify-center flex-1">
+                                {t("noLogsAvailable", "No logs available for this port")}
+                            </div>
+                        ) : (
+                            <div className="flex-1 overflow-auto">
+                                {currentLogs.map((log, index) => (
+                                    <div key={index} className="whitespace-pre-wrap break-words">
+                                        {log}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
-
-                    {currentLogs.length === 0 ? (
-                        <div className="text-gray-500 flex items-center justify-center flex-1">
-                            {t("noLogsAvailable", "No logs available for this port")}
-                        </div>
-                    ) : (
-                        <div className="flex-1 overflow-auto">
-                            {currentLogs.map((log, index) => (
-                                <div key={index} className="whitespace-pre-wrap break-words">
-                                    {log}
-                                </div>
-                            ))}
-                        </div>
-                    )}
                 </div>
             )}
         </div>

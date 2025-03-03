@@ -37,19 +37,19 @@ export default function MenuBar() {
         }
     }
 
-    function onBaudRateChange(e: React.ChangeEvent<HTMLSelectElement>) {
-        setSelectedBaudRate(e.target.value);
-        console.log(`set baud rate: ${e.target.value}`);
+    function onBaudRateChange(value: string) {
+        setSelectedBaudRate(value);
+        console.log(`set baud rate: ${value}`);
     }
 
-    function onLogLevelChange(e: React.ChangeEvent<HTMLSelectElement>) {
-        setSelectedLogLevel(e.target.value);
-        console.log(`set log level: ${e.target.value}`);
+    function onLogLevelChange(value: string) {
+        setSelectedLogLevel(value);
+        console.log(`set log level: ${value}`);
     }
 
     return (
         <div className="flex flex-row gap-4 pl-2">
-            <Select
+         {/*    <Select
                 className="min-w-[120px] w-auto"
                 size={size}
                 placeholder={t("label.Port")}
@@ -69,14 +69,14 @@ export default function MenuBar() {
                         return <SelectItem key={key} data-value={port}>{key}</SelectItem>;
                     })
                 ) : (<SelectItem key="No Device" data-value="No Device">{('No Device')}</SelectItem>)}
-            </Select>
+            </Select> */}   
             <Select
                 disableSelectorIconRotation
                 className="min-w-[120px] w-auto"
                 size={size}
                 isDisabled={portList.length == 0}
                 placeholder={t("label.BuadRate")}
-                defaultSelectedKeys={[DEFAULT_BAUD_RATE]}
+                selectedKeys={[selectedBaudRate]}
                 onChange={onBaudRateChange}
             >
                 {BuadRateList.map((rate) => (
@@ -90,7 +90,7 @@ export default function MenuBar() {
                 className="min-w-[120px] w-auto"
                 size={size}
                 placeholder={t("label.Level")}
-                defaultSelectedKeys={[DEFAULT_LOG_LEVEL]}
+                selectedKeys={[selectedLogLevel]}
                 onChange={onLogLevelChange}
             >
                 {LevelList.map((level) => (

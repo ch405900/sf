@@ -4,9 +4,9 @@ import { Button, Input } from "@heroui/react";
 // 发送数据, 信号
 export const UserArea = () => {
     return (
-        <div className="flex flex-row bg-default-400">
+        <div className="flex flex-row bg-default-200">
             <Input className="m-2" placeholder="Message" />
-            <div className="flex justify-end bg-default-400">
+            <div className="flex justify-end">
                 <Button className="m-2">Send</Button>
             </div>
         </div>

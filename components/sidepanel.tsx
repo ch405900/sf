@@ -23,16 +23,19 @@ export const SidePanel = () => {
             <Button size="sm" isIconOnly aria-label="Like" className="flex-shrink-0" >
                 <FontAwesomeIcon
                     icon={faRotate}
+                    color="#333333"
                 />
             </Button>
             <Button size="sm" isIconOnly aria-label="Like" className="flex-shrink-0">
                 <FontAwesomeIcon
                     icon={faArrowUp}
+                    color="#333333"
                 />
             </Button>
             <Button size="sm" isIconOnly aria-label="Like" className="flex-shrink-0">
                 <FontAwesomeIcon
                     icon={faArrowDown}
+                    color="#333333"
                 />
             </Button>
             <Button size="sm" isIconOnly aria-label="Like" color={softWrap ? "primary" : "default"} onPress={handleSoftWrap} className="flex-shrink-0">

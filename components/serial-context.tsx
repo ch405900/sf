@@ -11,6 +11,8 @@ interface SerialContextType {
     reloadPortList: () => Promise<SerialPort[]>;
     openPort: (port: SerialPort, baudRate?: number) => Promise<boolean>;
     closePort: (port: SerialPort) => Promise<boolean>;
+    openedPorts: Set<SerialPort>;
+    isPortOpening: boolean;
 }
 
 // 创建 Context
@@ -20,6 +22,8 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const [portList, setPortList] = useState<SerialPort[]>([]);
     const [selectedPort, setSelectedPort] = useState<SerialPort | null>(null);
     const [portLogs, setPortLogs] = useState<Map<SerialPort, string[]>>(new Map());
+    const [openedPorts, setOpenedPorts] = useState<Set<SerialPort>>(new Set());
+    const [isPortOpening, setIsPortOpening] = useState<boolean>(false);
     const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null);
     const textDecoderRef = useRef<TextDecoder | null>(null);
     const keepReadingRef = useRef(true);
@@ -144,7 +148,25 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     // Function to open a port
     const openPort = useCallback(async (port: SerialPort, baudRate: number = parseInt(DEFAULT_BAUD_RATE)) => {
+        // 如果已经在打开中，则返回
+        if (isPortOpening) {
+            console.log("Port opening already in progress");
+            return false;
+        }
+
+        // 如果端口已打开，直接返回
+        if (openedPorts.has(port)) {
+            console.log("Port is already open");
+            return true;
+        }
+
         try {
+            // 先标记端口正在打开，确保UI立即显示正在连接状态
+            setIsPortOpening(true);
+            
+            // 允许UI更新
+            await new Promise(resolve => setTimeout(resolve, 10));
+
             // Close any existing connection first
             await closeCurrentReader();
 
@@ -163,22 +185,38 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             // Start reading from the port
             readFromPort(port);
 
+            // Add the port to the openedPorts set
+            setOpenedPorts(prevOpenedPorts => new Set(prevOpenedPorts).add(port));
+
             return true;
         } catch (error) {
             if (error instanceof Error && error.message.includes('Port already open')) {
                 console.log('Port was already open, starting to read');
                 // Start reading from the port
                 readFromPort(port);
+                
+                // Add the port to openedPorts if not already there
+                setOpenedPorts(prevOpenedPorts => new Set(prevOpenedPorts).add(port));
+                
                 return true;
             }
 
             console.error("Error opening port:", error);
             return false;
+        } finally {
+            // 无论成功失败，最后都要设置回来
+            setIsPortOpening(false);
         }
-    }, [closeCurrentReader, readFromPort]);
+    }, [closeCurrentReader, readFromPort, openedPorts, isPortOpening]);
 
     // Function to close a port
     const closePort = useCallback(async (port: SerialPort) => {
+        // 检查端口是否已打开
+        if (!openedPorts.has(port)) {
+            console.log("Port is not open, no need to close");
+            return true;
+        }
+
         try {
             // Stop reading first
             await closeCurrentReader();
@@ -189,19 +227,27 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 console.log("Port closed");
             }
 
+            // Remove the port from the openedPorts set
+            setOpenedPorts(prevOpenedPorts => {
+                const newOpenedPorts = new Set(prevOpenedPorts);
+                newOpenedPorts.delete(port);
+                return newOpenedPorts;
+            });
+
             return true;
         } catch (error) {
             console.error("Error closing port:", error);
             return false;
         }
-    }, [closeCurrentReader]);
+    }, [closeCurrentReader, openedPorts]);
 
     // Watch for changes to selectedPort
     useEffect(() => {
-        if (selectedPort) {
-            // Automatically open the port with default baud rate when selected
-            openPort(selectedPort, parseInt(DEFAULT_BAUD_RATE));
-        }
+        // 不再自动打开端口
+        // if (selectedPort) {
+        //     // Automatically open the port with default baud rate when selected
+        //     openPort(selectedPort, parseInt(DEFAULT_BAUD_RATE));
+        // }
 
         // Clean up function
         return () => {
@@ -209,7 +255,7 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 closeCurrentReader();
             }
         };
-    }, [selectedPort, openPort, closeCurrentReader]);
+    }, [selectedPort, closeCurrentReader]);
 
     // Initial port fetch on mount
     useEffect(() => {
@@ -226,7 +272,9 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 setPortLogs,
                 reloadPortList: fetchPorts,
                 openPort,
-                closePort
+                closePort,
+                openedPorts,
+                isPortOpening
             }}
         >
             {children}
