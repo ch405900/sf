@@ -1,11 +1,11 @@
 import { Input } from "@heroui/react";
 import { Select, SelectItem } from "@heroui/react";
 import { MatchCaseIcon, MatchRegexIcon, SearchIcon } from "./icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IconSwitch } from "./match-case-switch";
 import { useSerial } from "./serial-context";
 import { useTranslation } from "next-i18next";
-import { BuadRateList, LevelList } from "@/model/constants";
+import { BuadRateList, LevelList, DEFAULT_BAUD_RATE, DEFAULT_LOG_LEVEL } from "@/model/constants";
 import { USB_VENDOR } from "@/model/usbvendor";
 
 export default function MenuBar() {
@@ -13,10 +13,21 @@ export default function MenuBar() {
     const _sizes = ["sm", "md", "lg"];
     const size = "sm";
     const [_matchCase, _setMatchCase] = useState(false);
+    const [selectedBaudRate, setSelectedBaudRate] = useState(DEFAULT_BAUD_RATE);
+    const [selectedLogLevel, setSelectedLogLevel] = useState(DEFAULT_LOG_LEVEL);
 
     const { portList, setSelectedPort } = useSerial();
     const { t } = useTranslation('common');
 
+    // 当端口列表变化时，默认选择第一个端口
+    useEffect(() => {
+        if (portList.length > 0) {
+            setSelectedPort(portList[0]);
+            console.log(`Auto selected first port: ${portList[0].getInfo().usbVendorId}:${portList[0].getInfo().usbProductId}`);
+        } else {
+            setSelectedPort(null);
+        }
+    }, [portList, setSelectedPort]);
 
     function onPortChange(e: React.ChangeEvent<HTMLSelectElement>) {
         const selectedPort = portList.find(port => port.getInfo().usbVendorId + ":" + port.getInfo().usbProductId === e.target.value);
@@ -24,6 +35,16 @@ export default function MenuBar() {
             setSelectedPort(selectedPort);
             console.log(`set selected port: ${selectedPort.getInfo().usbVendorId}:${selectedPort.getInfo().usbProductId}`);
         }
+    }
+
+    function onBaudRateChange(e: React.ChangeEvent<HTMLSelectElement>) {
+        setSelectedBaudRate(e.target.value);
+        console.log(`set baud rate: ${e.target.value}`);
+    }
+
+    function onLogLevelChange(e: React.ChangeEvent<HTMLSelectElement>) {
+        setSelectedLogLevel(e.target.value);
+        console.log(`set log level: ${e.target.value}`);
     }
 
     return (
@@ -34,6 +55,7 @@ export default function MenuBar() {
                 placeholder={t("label.Port")}
                 isDisabled={portList.length == 0}
                 onChange={onPortChange}
+                selectedKeys={portList.length > 0 && portList[0] ? [portList[0].getInfo().usbVendorId + ":" + portList[0].getInfo().usbProductId] : []}
             >
                 {portList.length > 0 ? (
                     portList.map((port) => {
@@ -54,6 +76,8 @@ export default function MenuBar() {
                 size={size}
                 isDisabled={portList.length == 0}
                 placeholder={t("label.BuadRate")}
+                defaultSelectedKeys={[DEFAULT_BAUD_RATE]}
+                onChange={onBaudRateChange}
             >
                 {BuadRateList.map((rate) => (
                     <SelectItem key={rate.key} >
@@ -66,6 +90,8 @@ export default function MenuBar() {
                 className="min-w-[120px] w-auto"
                 size={size}
                 placeholder={t("label.Level")}
+                defaultSelectedKeys={[DEFAULT_LOG_LEVEL]}
+                onChange={onLogLevelChange}
             >
                 {LevelList.map((level) => (
                     <SelectItem key={level.key} >{level.label}</SelectItem>

@@ -73,17 +73,9 @@ export const LogRenderer = () => {
         >
             {!selectedPort && (
                 <div className="text-gray-500 flex flex-col items-center justify-center h-full">
-                    {/* Button to request port access */}
-                    <Button
-                        color="primary"
-                        onPress={handleRequestPort}
-                        disabled={requestingPort}
-                        className="mb-4 px-4 py-2"
-                    >
-                        {requestingPort
-                            ? t("requestingPorts", "Requesting port access...")
-                            : t("requestPorts", "Request Serial Port Access")}
-                    </Button>
+                    {/* Request port message - buttons moved to card header */}
+                    <div className="mb-4">{t("selectSerialPort", "Select a serial port to view logs")}</div>
+                    
                     {portList.length > 0 && <div className="mb-4">{t("availableSerialPorts")}</div>}
                     {!isClient ? (
                         <div>{t("loadingSerialPorts")}</div>
@@ -108,8 +100,8 @@ export const LogRenderer = () => {
                                         }
 
                                         return (
-                                            <li 
-                                                key={index} 
+                                            <li
+                                                key={index}
                                                 className="mb-1 hover:text-gray-800 hover:bg-gray-100 p-2 rounded cursor-pointer"
                                                 onClick={() => handleSelectPort(port)}
                                             >
@@ -129,22 +121,15 @@ export const LogRenderer = () => {
                 <div className="flex flex-col h-full">
                     <div className="flex justify-between items-center mb-2 pb-2 border-b">
                         <div className="font-medium">
-                            {t("connectedTo", "Connected to")}: 
+                            {t("connectedTo", "Connected to")}:
                             <span className="text-blue-600 ml-2">
-                                {t("serialPort", "Serial Port")} 
+                                {t("serialPort", "Serial Port")}
                                 {portList.indexOf(selectedPort) + 1} (115200 baud)
                             </span>
                         </div>
-                        <Button
-                            size="sm"
-                            color="danger"
-                            onPress={() => setSelectedPort(null)}
-                            className="px-2 py-1 text-xs"
-                        >
-                            {t("disconnect", "Disconnect")}
-                        </Button>
+                        {/* Disconnect button moved to card header */}
                     </div>
-                    
+
                     {currentLogs.length === 0 ? (
                         <div className="text-gray-500 flex items-center justify-center flex-1">
                             {t("noLogsAvailable", "No logs available for this port")}

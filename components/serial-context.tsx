@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
+import { DEFAULT_BAUD_RATE } from "@/model/constants";
 
 // 定义 Context 结构
 interface SerialContextType {
     portList: SerialPort[];
     selectedPort: SerialPort | null;
-    setSelectedPort: (port: SerialPort) => void;
+    setSelectedPort: (port: SerialPort | null) => void;
     portLogs: Map<SerialPort, string[]>;
     setPortLogs: React.Dispatch<React.SetStateAction<Map<SerialPort, string[]>>>;
     reloadPortList: () => Promise<SerialPort[]>;
@@ -42,7 +43,7 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         } else {
             // We're either in SSR or the browser doesn't support Web Serial API
             setPortList([]);
-            
+
             if (isBrowser) {
                 console.warn("Web Serial API is not available in this browser.");
             }
@@ -54,7 +55,7 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const closeCurrentReader = useCallback(async () => {
         // Cancel ongoing reading operation
         keepReadingRef.current = false;
-        
+
         // Close the reader if it exists
         if (readerRef.current) {
             try {
@@ -86,42 +87,42 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             // Read data until cancelled
             while (keepReadingRef.current) {
                 const { value, done } = await readerRef.current.read();
-                
+
                 if (done) {
                     // The stream was cancelled
                     break;
                 }
-                
+
                 if (value) {
                     // Decode the received data
                     const text = textDecoderRef.current.decode(value);
-                    
+
                     // Split the text by new lines
                     const lines = text.split(/\r?\n/);
-                    
+
                     // Update the portLogs with new data
                     setPortLogs(prevLogs => {
                         const newLogs = new Map(prevLogs);
                         const portLog = newLogs.get(port) || [];
-                        
+
                         // If last log line doesn't end with a newline, append to it
                         if (portLog.length > 0 && !text.includes('\n') && !text.includes('\r')) {
                             const lastLineIndex = portLog.length - 1;
                             const newLastLine = portLog[lastLineIndex] + lines[0];
-                            
+
                             const updatedLog = [...portLog.slice(0, lastLineIndex), newLastLine];
-                            
+
                             // Add any additional lines
                             if (lines.length > 1) {
                                 updatedLog.push(...lines.slice(1));
                             }
-                            
+
                             newLogs.set(port, updatedLog);
                         } else {
                             // Otherwise add all lines
                             newLogs.set(port, [...portLog, ...lines.filter(line => line.trim() !== '')]);
                         }
-                        
+
                         return newLogs;
                     });
                 }
@@ -142,26 +143,26 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }, []);
 
     // Function to open a port
-    const openPort = useCallback(async (port: SerialPort, baudRate: number = 115200) => {
+    const openPort = useCallback(async (port: SerialPort, baudRate: number = parseInt(DEFAULT_BAUD_RATE)) => {
         try {
             // Close any existing connection first
             await closeCurrentReader();
-            
+
             // Configure the port
-            await port.open({ 
-                baudRate: baudRate, 
-                dataBits: 8, 
-                stopBits: 1, 
+            await port.open({
+                baudRate: baudRate,
+                dataBits: 8,
+                stopBits: 1,
                 parity: 'none',
                 flowControl: 'none'
             });
-            
+
             // If it's already open, this will throw an error, which we'll catch
             console.log(`Port opened with baud rate ${baudRate}`);
-            
+
             // Start reading from the port
             readFromPort(port);
-            
+
             return true;
         } catch (error) {
             if (error instanceof Error && error.message.includes('Port already open')) {
@@ -170,7 +171,7 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 readFromPort(port);
                 return true;
             }
-            
+
             console.error("Error opening port:", error);
             return false;
         }
@@ -181,13 +182,13 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         try {
             // Stop reading first
             await closeCurrentReader();
-            
+
             // Then close the port
             if (port.readable) {
                 await port.close();
                 console.log("Port closed");
             }
-            
+
             return true;
         } catch (error) {
             console.error("Error closing port:", error);
@@ -198,10 +199,10 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     // Watch for changes to selectedPort
     useEffect(() => {
         if (selectedPort) {
-            // Automatically open the port with 115200 baud rate when selected
-            openPort(selectedPort, 115200);
+            // Automatically open the port with default baud rate when selected
+            openPort(selectedPort, parseInt(DEFAULT_BAUD_RATE));
         }
-        
+
         // Clean up function
         return () => {
             if (selectedPort) {

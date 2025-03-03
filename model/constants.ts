@@ -20,3 +20,7 @@ export const LevelList = [
     { key: "5", label: "Error" },
     { key: "6", label: "Fatal" },
 ];
+
+// Default values
+export const DEFAULT_BAUD_RATE = "115200";
+export const DEFAULT_LOG_LEVEL = "1"; // Verbose
