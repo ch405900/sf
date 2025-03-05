@@ -16,5 +16,15 @@
   "requestPorts": "Request Serial Port Access",
   "requestingPorts": "Requesting port access...",
   "connectedTo": "Connected to",
-  "disconnect": "Disconnect"
+  "disconnect": "Disconnect",
+  "menu": "Menu",
+  "requestPermission": "Request Access Port",
+  "error": "Error",
+  "operationFailed": "Operation Failed",
+  "connectSuccess": "Connect Success",
+  "disconnectSuccess": "Disconnect Success",
+  "connectFailed": "Connect Failed",
+  "disconnectFailed": "Disconnect Failed",
+  "availablePorts": "Available Ports",
+  "reload": "Reload Port List"
 }

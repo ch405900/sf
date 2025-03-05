@@ -5,7 +5,7 @@
     "Search": "搜索",
     "Port": "端口号",
     "BuadRate": "波特率",
-    "Level":"级别"
+    "Level": "级别"
   },
   "selectPortToViewLogs": "请选择一个端口查看日志",
   "noLogsAvailable": "此端口暂无日志",
@@ -16,5 +16,14 @@
   "requestPorts": "请求串行端口访问权限",
   "requestingPorts": "正在请求端口访问权限...",
   "connectedTo": "已连接到",
-  "disconnect": "断开连接"
+  "disconnect": "断开连接",
+  "menu": "菜单",
+  "error": "错误",
+  "operationFailed": "操作失败",
+  "connectSuccess": "连接成功",
+  "disconnectSuccess": "断开连接成功",
+  "connectFailed": "连接失败",
+  "disconnectFailed": "断开连接失败",
+  "availablePorts": "可用端口",
+  "reload": "刷新端口列表"
 }

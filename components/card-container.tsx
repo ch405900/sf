@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, Fragment, useMemo } from 'react';
-import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@heroui/react";
+import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Select, SelectItem, Listbox, ListboxItem, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
 import { ExpandIcon, CollapseIcon } from './icons';
 import { useSerial } from './serial-context';
 import { useTranslation } from "next-i18next";
@@ -15,12 +15,38 @@ interface CardContainerProps {
 
 type Variant = "flat" | "solid" | "bordered" | undefined;
 
+export const ListboxWrapper = ({ children }) => (
+  <div className="w-[260px] border-small px-1 py-2 rounded-small border-default-200 dark:border-default-100">
+    {children}
+  </div>
+);
+
+export const animals = [
+  { key: "cat", label: "Cat" },
+  { key: "dog", label: "Dog" },
+  { key: "elephant", label: "Elephant" },
+  { key: "lion", label: "Lion" },
+  { key: "tiger", label: "Tiger" },
+  { key: "giraffe", label: "Giraffe" },
+  { key: "dolphin", label: "Dolphin" },
+  { key: "penguin", label: "Penguin" },
+  { key: "zebra", label: "Zebra" },
+  { key: "shark", label: "Shark" },
+  { key: "whale", label: "Whale" },
+  { key: "otter", label: "Otter" },
+  { key: "crocodile", label: "Crocodile" },
+];
 
 export const CardContainer: React.FC<CardContainerProps> = ({ children, title = "Serial Flow" }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [requestingPort, setRequestingPort] = useState(false);
+  const [hasPermission, setHasPermission] = useState(false);
   const { t } = useTranslation('common');
   const { selectedPort, setSelectedPort, reloadPortList, portList, openPort, closePort, openedPorts, isPortOpening } = useSerial();
+
+  const [selectedKeys, setSelectedKeys] = React.useState(new Set(["text"]));
+
+  const selectedValue = React.useMemo(() => Array.from(selectedKeys).join(", "), [selectedKeys]);
 
 
 
@@ -38,6 +64,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
         await navigator.serial.requestPort();
         // After user selects a port, refresh the port list
         await reloadPortList();
+        setHasPermission(true);
       }
     } catch (error) {
       // Check if it's the "user cancelled" error
@@ -199,22 +226,22 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
                   variant="bordered"
                   color="danger"
                   size="sm"
-                  className="text-sm"
+                  className={`text-sm transition-all duration-300`}
                 >
                   {t("menu", "Menu")}
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Serial Flow Actions" variant="faded">
-                <DropdownItem
+                {/* {!hasPermission ? (<DropdownItem
                   key="request"
-                  onClick={handleRequestPort}
+                  onPress={handleRequestPort} 
                   isDisabled={requestingPort || (selectedPort !== null)}
                 >
                   {requestingPort
                     ? t("requestingPorts", "Requesting port access...")
                     : t("requestPorts", "Request Serial Port Access")}
-                </DropdownItem>
-
+                </DropdownItem>) : null} */}
+                {/* 
                 {portList.length > 0 && !selectedPort ? (
                   <Fragment>
                     <DropdownItem key="port-header" className="font-semibold opacity-70" isReadOnly>
@@ -237,7 +264,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
                       return (
                         <DropdownItem
                           key={`port-${index}`}
-                          onClick={() => {
+                          onPress={() => {
                             setSelectedPort(port);
                             addToast({
                               title: t("connectSuccess", "Connect Success"),
@@ -253,9 +280,9 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
                       );
                     })}
                   </Fragment>
-                ) : null}
+                ) : null} */}
 
-                <DropdownItem key="reload" onClick={handleReloadPortList}>
+                <DropdownItem key="reload" onPress={handleReloadPortList}>
                   {t("reload", "Reload Port List")}
                 </DropdownItem>
               </DropdownMenu>
@@ -265,39 +292,90 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
 
         {/* Center - Connection Status with Icon */}
         <div className="flex items-center justify-center">
-          {selectedPort && (
-            <div className="flex items-center gap-2 text-sm">
+          <Popover
+            placement="bottom"
+            classNames={{
+              content: [
+                "w-[260px] px-1 py-1 rounded-small",
+              ]
+            }}>
+            <PopoverTrigger >
               <Button
                 size='sm'
                 variant='light'
                 className={`
-                font-medium
-                ${selectedPort && openedPorts.has(selectedPort)
+              font-medium
+              ${selectedPort && openedPorts.has(selectedPort)
                     ? 'text-gray-700'
                     : isPortOpening && selectedPort
                       ? 'text-gray-700'
                       : 'text-gray-600'
                   }
-                transition-colors duration-300
-              `} onPress={handleConnection}><div className={`
-                  w-2 h-2 rounded-full 
-                  ${selectedPort && openedPorts.has(selectedPort)
+              transition-colors duration-300
+              `} onPress={handleConnection}>
+                <div className={`
+                w-2 h-2 rounded-full 
+                ${selectedPort && openedPorts.has(selectedPort)
                     ? 'bg-green-500 animate-pulse'
                     : isPortOpening && selectedPort
                       ? 'bg-yellow-500 animate-pulse'
                       : 'bg-red-500'
                   }
-                  transition-colors duration-300
-                `}></div>{deviceName}</Button>
-            </div>
-          )}
+                transition-colors duration-300
+              `}></div>
+                {(deviceName === '' || deviceName === undefined) ? "Request Port" : deviceName}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent>
+              <Listbox
+                disallowEmptySelection
+                aria-label="Single selection example"
+                selectedKeys={selectedKeys}
+                selectionMode="single"
+                variant="flat"
+                onSelectionChange={setSelectedKeys}
+              >
+                {portList.map((port, index) => {
+                  // Try to get port info and format it for display
+                  let portInfo = "";
+                  try {
+                    if (port.getInfo) {
+                      const info = port.getInfo();
+                      if (info.usbVendorId) {
+                        portInfo = `${info.usbVendorId}:${info.usbProductId || 'N/A'}`;
+                      }
+                    }
+                  } catch (e) {
+                    console.error("Error getting port info:", e);
+                  }
+                  return (
+                    <ListboxItem
+                      key={`port-${index}`}
+                      onPress={() => {
+                        setSelectedPort(port);
+                        addToast({
+                          title: t("connectSuccess", "Connect Success"),
+                          description: `${t("connectSuccessDesc", "You have successfully connected to")} ${t("serialPort", "Serial Port")} ${index + 1}`,
+                          variant: "flat",
+                          timeout: 3000,
+                          shouldShowTimeoutProgess: true,
+                        });
+                      }}
+                    >
+                      {index + 1} {portInfo ? `(${portInfo})` : ''}
+                    </ListboxItem>
+                  );
+                })}
+              </Listbox>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <Button
           isIconOnly
           variant="light"
           aria-label={isFullScreen ? "Exit fullscreen" : "Enter fullscreen"}
-          onClick={toggleFullScreen}
+          // onPress={toggleFullScreen}
           className="text-gray-600 hover:text-gray-800"
         >
           {isFullScreen ? <CollapseIcon className="w-5 h-5" /> : <ExpandIcon className="w-5 h-5" />}

@@ -19,15 +19,14 @@ export default function MenuBar() {
     const { portList, setSelectedPort } = useSerial();
     const { t } = useTranslation('common');
 
-    // 当端口列表变化时，默认选择第一个端口
-    useEffect(() => {
-        if (portList.length > 0) {
-            setSelectedPort(portList[0]);
-            console.log(`Auto selected first port: ${portList[0].getInfo().usbVendorId}:${portList[0].getInfo().usbProductId}`);
-        } else {
-            setSelectedPort(null);
-        }
-    }, [portList, setSelectedPort]);
+    // useEffect(() => {
+    //     if (portList.length > 0) {
+    //         setSelectedPort(portList[0]);
+    //         console.log(`Auto selected first port: ${portList[0].getInfo().usbVendorId}:${portList[0].getInfo().usbProductId}`);
+    //     } else {
+    //         setSelectedPort(null);
+    //     }
+    // }, [portList, setSelectedPort]);
 
     function onPortChange(e: React.ChangeEvent<HTMLSelectElement>) {
         const selectedPort = portList.find(port => port.getInfo().usbVendorId + ":" + port.getInfo().usbProductId === e.target.value);
