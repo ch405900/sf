@@ -26,5 +26,6 @@
   "connectFailed": "Connect Failed",
   "disconnectFailed": "Disconnect Failed",
   "availablePorts": "Available Ports",
-  "reload": "Reload Port List"
+  "reload": "Reload Port List",
+  "noConnectedDevices":"No connected devices"
 }

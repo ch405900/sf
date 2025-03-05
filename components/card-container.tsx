@@ -7,6 +7,7 @@ import { useSerial } from './serial-context';
 import { useTranslation } from "next-i18next";
 import { addToast } from "@heroui/toast";
 import { USB_VENDOR } from "@/model/usbvendor";
+import CardTitleDeviceDropList from './card-title-device-drop-list';
 
 interface CardContainerProps {
   children: React.ReactNode;
@@ -15,72 +16,16 @@ interface CardContainerProps {
 
 type Variant = "flat" | "solid" | "bordered" | undefined;
 
-export const ListboxWrapper = ({ children }) => (
-  <div className="w-[260px] border-small px-1 py-2 rounded-small border-default-200 dark:border-default-100">
-    {children}
-  </div>
-);
-
-export const animals = [
-  { key: "cat", label: "Cat" },
-  { key: "dog", label: "Dog" },
-  { key: "elephant", label: "Elephant" },
-  { key: "lion", label: "Lion" },
-  { key: "tiger", label: "Tiger" },
-  { key: "giraffe", label: "Giraffe" },
-  { key: "dolphin", label: "Dolphin" },
-  { key: "penguin", label: "Penguin" },
-  { key: "zebra", label: "Zebra" },
-  { key: "shark", label: "Shark" },
-  { key: "whale", label: "Whale" },
-  { key: "otter", label: "Otter" },
-  { key: "crocodile", label: "Crocodile" },
-];
-
 export const CardContainer: React.FC<CardContainerProps> = ({ children, title = "Serial Flow" }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [requestingPort, setRequestingPort] = useState(false);
-  const [hasPermission, setHasPermission] = useState(false);
   const { t } = useTranslation('common');
   const { selectedPort, setSelectedPort, reloadPortList, portList, openPort, closePort, openedPorts, isPortOpening } = useSerial();
-
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set(["text"]));
-
-  const selectedValue = React.useMemo(() => Array.from(selectedKeys).join(", "), [selectedKeys]);
-
-
 
   // Toggle fullscreen state
   const toggleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
   };
 
-  // Request user to select a serial port
-  const handleRequestPort = async () => {
-    try {
-      setRequestingPort(true);
-      // The browser will show a port picker.
-      if (typeof navigator !== 'undefined' && navigator.serial) {
-        await navigator.serial.requestPort();
-        // After user selects a port, refresh the port list
-        await reloadPortList();
-        setHasPermission(true);
-      }
-    } catch (error) {
-      // Check if it's the "user cancelled" error
-      if (error instanceof Error &&
-        (error.name === 'NotFoundError' ||
-          error.message.includes('No port selected by the user'))) {
-        // This is expected when user cancels the dialog - no need to show an error
-        console.log('User cancelled port selection');
-      } else {
-        // For other errors, log to console
-        console.error('Error requesting serial port:', error);
-      }
-    } finally {
-      setRequestingPort(false);
-    }
-  };
 
   const getDeviceName = (port: SerialPort) => {
     try {
@@ -260,7 +205,6 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
                       } catch (e) {
                         console.error("Error getting port info:", e);
                       }
-
                       return (
                         <DropdownItem
                           key={`port-${index}`}
@@ -281,7 +225,6 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
                     })}
                   </Fragment>
                 ) : null} */}
-
                 <DropdownItem key="reload" onPress={handleReloadPortList}>
                   {t("reload", "Reload Port List")}
                 </DropdownItem>
@@ -323,50 +266,11 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
                   }
                 transition-colors duration-300
               `}></div>
-                {(deviceName === '' || deviceName === undefined) ? "Request Port" : deviceName}
+                {(deviceName === '' || deviceName === undefined) ? t("noConnectedDevices") : deviceName}
               </Button>
             </PopoverTrigger>
             <PopoverContent>
-              <Listbox
-                disallowEmptySelection
-                aria-label="Single selection example"
-                selectedKeys={selectedKeys}
-                selectionMode="single"
-                variant="flat"
-                onSelectionChange={setSelectedKeys}
-              >
-                {portList.map((port, index) => {
-                  // Try to get port info and format it for display
-                  let portInfo = "";
-                  try {
-                    if (port.getInfo) {
-                      const info = port.getInfo();
-                      if (info.usbVendorId) {
-                        portInfo = `${info.usbVendorId}:${info.usbProductId || 'N/A'}`;
-                      }
-                    }
-                  } catch (e) {
-                    console.error("Error getting port info:", e);
-                  }
-                  return (
-                    <ListboxItem
-                      key={`port-${index}`}
-                      onPress={() => {
-                        setSelectedPort(port);
-                        addToast({
-                          title: t("connectSuccess", "Connect Success"),
-                          description: `${t("connectSuccessDesc", "You have successfully connected to")} ${t("serialPort", "Serial Port")} ${index + 1}`,
-                          variant: "flat",
-                          timeout: 3000,
-                          shouldShowTimeoutProgess: true,
-                        });
-                      }}
-                    >
-                      {index + 1} {portInfo ? `(${portInfo})` : ''}
-                    </ListboxItem>
-                  );
-                })}
-              </Listbox>
+              <CardTitleDeviceDropList></CardTitleDeviceDropList>
             </PopoverContent>
           </Popover>
         </div>
@@ -375,7 +279,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
           isIconOnly
           variant="light"
           aria-label={isFullScreen ? "Exit fullscreen" : "Enter fullscreen"}
-          // onPress={toggleFullScreen}
+          onPress={toggleFullScreen}
           className="text-gray-600 hover:text-gray-800"
         >
           {isFullScreen ? <CollapseIcon className="w-5 h-5" /> : <ExpandIcon className="w-5 h-5" />}

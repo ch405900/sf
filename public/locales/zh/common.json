@@ -25,5 +25,6 @@
   "connectFailed": "连接失败",
   "disconnectFailed": "断开连接失败",
   "availablePorts": "可用端口",
-  "reload": "刷新端口列表"
+  "reload": "刷新端口列表",
+  "noConnectedDevices": "无连接设备"
 }

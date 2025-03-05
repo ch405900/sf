@@ -3,6 +3,7 @@
 import { useSerial } from "./serial-context";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "next-i18next";
+import { Button } from "@heroui/react";
 
 // 日志渲染器,
 export const LogRenderer = () => {
@@ -77,14 +78,14 @@ export const LogRenderer = () => {
                 <div className="text-gray-500 flex flex-col items-center justify-center h-full">
                     {/* Request port message - buttons moved to card header */}
                     <div className="mb-4">{t("selectSerialPort", "Select a serial port to view logs")}</div>
-
                     {portList.length > 0 && <div className="mb-4">{t("availableSerialPorts")}</div>}
                     {!isClient ? (
                         <div>{t("loadingSerialPorts")}</div>
                     ) : (
                         <>
                             {portList.length === 0 ? (
-                                <div>{t("noSerialPortsDetected")}</div>
+                                <div>{t("noSerialPortsDetected")}
+                                </div>
                             ) : (
                                 <ul className="list-disc pl-5 text-gray-600">
                                     {portList.map((port, index) => {
@@ -100,12 +101,11 @@ export const LogRenderer = () => {
                                         } catch (e) {
                                             // Ignore errors when trying to get port info
                                         }
-
                                         return (
                                             <li
                                                 key={index}
                                                 className="mb-1 hover:text-gray-800 hover:bg-gray-100 p-2 rounded cursor-pointer"
-                                                onClick={() => handleSelectPort(port)}
+                                            // onClick={() => handleSelectPort(port)}
                                             >
                                                 {`${t("serialPort", "Serial Port")} ${index + 1}`} {portInfo}
                                             </li>
@@ -113,12 +113,14 @@ export const LogRenderer = () => {
                                     })}
                                 </ul>
                             )}
-
                         </>
                     )}
+                    {portList.length == 0 ? <Button className="width-full w-xs"
+                        onPress={handleRequestPort} color="default" variant="ghost">
+                        {t("requestPorts", "Request Port")}
+                    </Button> : null}
                 </div>
             )}
-
             {selectedPort && shouldShowLogs && (
                 <div className="flex flex-col h-full">
                     <div className="flex-1 overflow-auto">
