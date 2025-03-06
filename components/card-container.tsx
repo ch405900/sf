@@ -19,7 +19,7 @@ type Variant = "flat" | "solid" | "bordered" | undefined;
 export const CardContainer: React.FC<CardContainerProps> = ({ children, title = "Serial Flow" }) => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const { t } = useTranslation('common');
-  const { selectedPort, setSelectedPort, reloadPortList, portList, openPort, closePort, openedPorts, isPortOpening } = useSerial();
+  const { selectedPort, setSelectedPort, reloadPortList, portList, openPort, closePort, openedPorts } = useSerial();
 
   // Toggle fullscreen state
   const toggleFullScreen = () => {
@@ -252,7 +252,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
               font-medium
               ${selectedPort && openedPorts.has(selectedPort)
                     ? 'text-gray-700'
-                    : isPortOpening && selectedPort
+                    : selectedPort
                       ? 'text-gray-700'
                       : 'text-gray-600'
                   }
@@ -262,7 +262,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
                 w-2 h-2 rounded-full 
                 ${selectedPort && openedPorts.has(selectedPort)
                     ? 'bg-green-500 animate-pulse'
-                    : isPortOpening && selectedPort
+                    : selectedPort
                       ? 'bg-yellow-500 animate-pulse'
                       : 'bg-red-500'
                   }

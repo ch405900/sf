@@ -19,11 +19,11 @@ export const LogRenderer = () => {
     }, []);
 
     // Reload port list when component mounts on client side
-    useEffect(() => {
-        if (isClient) {
-            reloadPortList();
-        }
-    }, [isClient, reloadPortList]);
+    // useEffect(() => {
+    //     if (isClient) {
+    //         reloadPortList();
+    //     }
+    // }, [isClient, reloadPortList]);
 
     // Auto-scroll to the bottom when new logs are added
     useEffect(() => {

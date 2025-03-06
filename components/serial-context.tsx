@@ -1,29 +1,36 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
 import { DEFAULT_BAUD_RATE } from "@/model/constants";
 
+enum ContextState {
+    IDLE,
+    ACCESS_PORT_FAILED,
+    GRANTED,
+    UNSUPPORT,
+}
+
 // 定义 Context 结构
 interface SerialContextType {
-    portList: SerialPort[];
-    selectedPort: SerialPort | null;
-    setSelectedPort: (port: SerialPort | null) => void;
-    portLogs: Map<SerialPort, string[]>;
-    setPortLogs: React.Dispatch<React.SetStateAction<Map<SerialPort, string[]>>>;
-    reloadPortList: () => Promise<SerialPort[]>;
-    openPort: (port: SerialPort, baudRate?: number) => Promise<boolean>;
-    closePort: (port: SerialPort) => Promise<boolean>;
-    openedPorts: Set<SerialPort>;
-    isPortOpening: boolean;
+    state: ContextState,
+    portList: SerialPort[]; // 所有可用的串口
+    selectedPort: SerialPort | null; // 当前选中的串口
+    setSelectedPort: (port: SerialPort | null) => void; // 用于设置当前选中的串口
+    portLogs: Map<SerialPort, string[]>; // 每个串口的日志
+    setPortLogs: React.Dispatch<React.SetStateAction<Map<SerialPort, string[]>>>; // 用于设置每个串口的日志
+    reloadPortList: () => Promise<SerialPort[]>; // 用于重新加载串口列表
+    openPort: (port: SerialPort, baudRate?: number) => Promise<boolean>; // 用于打开串口
+    closePort: (port: SerialPort) => Promise<boolean>; // 用于关闭串口
+    openedPorts: Set<SerialPort>; // 已打开的串口
 }
 
 // 创建 Context
 const SerialContext = createContext<SerialContextType | undefined>(undefined);
 
 export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [contextState, setContextState] = useState<ContextState>(ContextState.IDLE);
     const [portList, setPortList] = useState<SerialPort[]>([]);
     const [selectedPort, setSelectedPort] = useState<SerialPort | null>(null);
     const [portLogs, setPortLogs] = useState<Map<SerialPort, string[]>>(new Map());
     const [openedPorts, setOpenedPorts] = useState<Set<SerialPort>>(new Set());
-    const [isPortOpening, setIsPortOpening] = useState<boolean>(false);
     const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null);
     const textDecoderRef = useRef<TextDecoder | null>(null);
     const keepReadingRef = useRef(true);
@@ -50,6 +57,7 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
             if (isBrowser) {
                 console.warn("Web Serial API is not available in this browser.");
+                setContextState(ContextState.UNSUPPORT);
             }
             return [];
         }
@@ -148,12 +156,6 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     // Function to open a port
     const openPort = useCallback(async (port: SerialPort, baudRate: number = parseInt(DEFAULT_BAUD_RATE)) => {
-        // 如果已经在打开中，则返回
-        if (isPortOpening) {
-            console.log("Port opening already in progress");
-            return false;
-        }
-
         // 如果端口已打开，直接返回
         if (openedPorts.has(port)) {
             console.log("Port is already open");
@@ -161,9 +163,6 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
 
         try {
-            // 先标记端口正在打开，确保UI立即显示正在连接状态
-            setIsPortOpening(true);
-
             // 允许UI更新
             await new Promise(resolve => setTimeout(resolve, 10));
 
@@ -204,10 +203,8 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             console.error("Error opening port:", error);
             return false;
         } finally {
-            // 无论成功失败，最后都要设置回来
-            setIsPortOpening(false);
         }
-    }, [closeCurrentReader, readFromPort, openedPorts, isPortOpening]);
+    }, [closeCurrentReader, readFromPort, openedPorts]);
 
     // Function to close a port
     const closePort = useCallback(async (port: SerialPort) => {
@@ -251,14 +248,10 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         };
     }, [selectedPort, closeCurrentReader]);
 
-    // Initial port fetch on mount
-    useEffect(() => {
-        fetchPorts();
-    }, [fetchPorts]);
-
     return (
         <SerialContext.Provider
             value={{
+                state: contextState,
                 portList,
                 selectedPort,
                 setSelectedPort,
@@ -268,7 +261,6 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 openPort,
                 closePort,
                 openedPorts,
-                isPortOpening
             }}
         >
             {children}

@@ -6,7 +6,7 @@ import { USB_VENDOR } from "@/model/usbvendor";
 
 export default function CardTitleDeviceDropList() {
   const [selectedKeys, setSelectedKeys] = React.useState(new Set(["text"]));
-  const { selectedPort, setSelectedPort, reloadPortList, portList, openPort, closePort, openedPorts, isPortOpening } = useSerial();
+  const { selectedPort, setSelectedPort, reloadPortList, portList, openPort, closePort, openedPorts } = useSerial();
   const { t } = useTranslation('common');
 
   const getDeviceName = (port: SerialPort) => {
@@ -32,7 +32,14 @@ export default function CardTitleDeviceDropList() {
       selectedKeys={selectedKeys}
       selectionMode="single"
       variant="flat"
-      onSelectionChange={setSelectedKeys}
+      onSelectionChange={(keys) => {
+        // 将 Selection 类型转换为 Set<string>
+        if (typeof keys === "string") {
+          setSelectedKeys(new Set([keys]));
+        } else if (keys instanceof Set) {
+          setSelectedKeys(keys as Set<string>);
+        }
+      }}
     >
       {portList.map((port, index) => {
         let portInfo = "";
