@@ -42,11 +42,14 @@ export const LogRenderer = () => {
     const handleRequestPort = async () => {
         try {
             setRequestingPort(true);
-            // The browser will show a port picker.
             if (typeof navigator !== 'undefined' && navigator.serial) {
                 await navigator.serial.requestPort();
-                // After user selects a port, refresh the port list
-                await reloadPortList();
+                const ports = await reloadPortList();
+                console.log('New ports after reload:', ports); // 添加日志
+                if (ports && ports.length > 0) {
+                    console.log('Setting first port:', ports[0]); // 添加日志
+                    setSelectedPort(ports[0]);
+                }
             }
         } catch (error) {
             // Check if it's the "user cancelled" error
@@ -66,6 +69,7 @@ export const LogRenderer = () => {
 
     // Handle selecting a port
     const handleSelectPort = (port: SerialPort) => {
+        console.log('Selecting port:', port);
         setSelectedPort(port);
     };
 
@@ -105,7 +109,7 @@ export const LogRenderer = () => {
                                             <li
                                                 key={index}
                                                 className="mb-1 hover:text-gray-800 hover:bg-gray-100 p-2 rounded cursor-pointer"
-                                            // onClick={() => handleSelectPort(port)}
+                                                onClick={() => handleSelectPort(port)}
                                             >
                                                 {`${t("serialPort", "Serial Port")} ${index + 1}`} {portInfo}
                                             </li>

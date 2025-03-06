@@ -163,7 +163,7 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         try {
             // 先标记端口正在打开，确保UI立即显示正在连接状态
             setIsPortOpening(true);
-            
+
             // 允许UI更新
             await new Promise(resolve => setTimeout(resolve, 10));
 
@@ -194,10 +194,10 @@ export const SerialProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 console.log('Port was already open, starting to read');
                 // Start reading from the port
                 readFromPort(port);
-                
+
                 // Add the port to openedPorts if not already there
                 setOpenedPorts(prevOpenedPorts => new Set(prevOpenedPorts).add(port));
-                
+
                 return true;
             }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, Fragment, useMemo } from 'react';
+import React, { useState, Fragment, useMemo, useEffect } from 'react';
 import { Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Select, SelectItem, Listbox, ListboxItem, Popover, PopoverTrigger, PopoverContent } from "@heroui/react";
 import { ExpandIcon, CollapseIcon } from './icons';
 import { useSerial } from './serial-context';
@@ -25,7 +25,6 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
   const toggleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
   };
-
 
   const getDeviceName = (port: SerialPort) => {
     try {
@@ -53,8 +52,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
   const deviceName = useMemo(() => {
     if (!selectedPort) return '';
     return getDeviceName(selectedPort);
-  }, [selectedPort]);
-
+  }, [selectedPort, portList]); // 添加 portList 依赖
 
   const handleDisconnect = async () => {
     if (selectedPort) {
@@ -71,6 +69,10 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
 
   // 限制连接/断开频率
   const [lastConnectionTime, setLastConnectionTime] = useState(0);
+
+  useEffect(() => {
+    handleConnection();
+  }, [selectedPort]);
 
   const handleConnection = async () => {
     const currentTime = Date.now();
@@ -255,7 +257,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
                       : 'text-gray-600'
                   }
               transition-colors duration-300
-              `} onPress={handleConnection}>
+              `}>
                 <div className={`
                 w-2 h-2 rounded-full 
                 ${selectedPort && openedPorts.has(selectedPort)
@@ -266,7 +268,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
                   }
                 transition-colors duration-300
               `}></div>
-                {(deviceName === '' || deviceName === undefined) ? t("noConnectedDevices") : deviceName}
+                {(!selectedPort) ? t("noConnectedDevices") : deviceName}
               </Button>
             </PopoverTrigger>
             <PopoverContent>

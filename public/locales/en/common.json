@@ -10,7 +10,7 @@
   "selectPortToViewLogs": "Select a port to view logs",
   "noLogsAvailable": "No logs available for this port",
   "availableSerialPorts": "Available Serial Ports",
-  "noSerialPortsDetected": "No serial ports detected. Click the button above to grant access to serial ports.",
+  "noSerialPortsDetected": "No serial ports detected. Click the button to grant access to serial ports.",
   "serialPort": "Serial Port",
   "loadingSerialPorts": "Loading serial ports...",
   "requestPorts": "Request Serial Port Access",
@@ -27,5 +27,5 @@
   "disconnectFailed": "Disconnect Failed",
   "availablePorts": "Available Ports",
   "reload": "Reload Port List",
-  "noConnectedDevices":"No connected devices"
+  "noConnectedDevices": "No connected devices"
 }
