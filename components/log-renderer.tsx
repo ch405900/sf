@@ -81,7 +81,7 @@ export const LogRenderer = () => {
             {!selectedPort && (
                 <div className="text-gray-500 flex flex-col items-center justify-center h-full">
                     {/* Request port message - buttons moved to card header */}
-                    <div className="mb-4">{t("selectSerialPort", "Select a serial port to view logs")}</div>
+
                     {portList.length > 0 && <div className="mb-4">{t("availableSerialPorts")}</div>}
                     {!isClient ? (
                         <div>{t("loadingSerialPorts")}</div>
@@ -119,7 +119,7 @@ export const LogRenderer = () => {
                             )}
                         </>
                     )}
-                    {portList.length == 0 ? <Button className="width-full w-xs"
+                    {portList.length == 0 ? <Button className="width-full w-xs mt-2"
                         onPress={handleRequestPort} color="default" variant="ghost">
                         {t("requestPorts", "Request Port")}
                     </Button> : null}

@@ -12,13 +12,19 @@ export const BuadRateList = [
     { key: "921600", label: "921600", alias: "921.6kbps" },
 ];
 
-export const LevelList = [
-    { key: "1", label: "Verbose" },
-    { key: "2", label: "Debug" },
-    { key: "3", label: "Info" },
-    { key: "4", label: "Warn" },
-    { key: "5", label: "Error" },
-    { key: "6", label: "Fatal" },
+export interface LogLevel {
+    key: string;
+    label: string;
+    color: string;
+}
+
+export const LevelList: Array<LogLevel> = [
+    { key: "1", label: "Verbose", color: "#d7d7d7" },
+    { key: "2", label: "Debug", color: "#d7d7d7" },
+    { key: "3", label: "Info", color: "#d7d7d7" },
+    { key: "4", label: "Warn", color: "#d7d7d7" },
+    { key: "5", label: "Error", color: "#d7d7d7" },
+    { key: "6", label: "Fatal", color: "#d7d7d7" },
 ];
 
 // Default values

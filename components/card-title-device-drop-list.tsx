@@ -30,7 +30,7 @@ export default function CardTitleDeviceDropList() {
       disallowEmptySelection
       aria-label="Single selection example"
       selectedKeys={selectedKeys}
-      selectionMode="single"
+      selectionMode="none"
       variant="flat"
       onSelectionChange={(keys) => {
         // 将 Selection 类型转换为 Set<string>

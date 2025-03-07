@@ -44,6 +44,10 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
     return `Port ${portList.indexOf(port) + 1}`;
   };
 
+  const selectedKeys = useMemo(() => {
+    return portList.map((port) => getDeviceName(port));
+  }, [selectedPort]);
+
   const handleReloadPortList = async () => {
     await reloadPortList();
   };
@@ -165,7 +169,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
       {/* Card Header */}
       <div className="flex items-center justify-between px-4 py-2 bg-gray-100 border-b border-gray-200">
         <div className="flex items-center space-x-4">
-          <h2 className="text-lg font-medium text-gray-800">{title}</h2>
+          {isFullScreen ? <h2 className="text-lg font-medium text-gray-800">{title}</h2> : null}
           <div className="flex items-center space-x-2">
             <Dropdown backdrop="blur">
               <DropdownTrigger>
@@ -179,54 +183,6 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
                 </Button>
               </DropdownTrigger>
               <DropdownMenu aria-label="Serial Flow Actions" variant="faded">
-                {/* {!hasPermission ? (<DropdownItem
-                  key="request"
-                  onPress={handleRequestPort} 
-                  isDisabled={requestingPort || (selectedPort !== null)}
-                >
-                  {requestingPort
-                    ? t("requestingPorts", "Requesting port access...")
-                    : t("requestPorts", "Request Serial Port Access")}
-                </DropdownItem>) : null} */}
-                {/* 
-                {portList.length > 0 && !selectedPort ? (
-                  <Fragment>
-                    <DropdownItem key="port-header" className="font-semibold opacity-70" isReadOnly>
-                      {t("availablePorts", "Available Ports")}
-                    </DropdownItem>
-                    {portList.map((port, index) => {
-                      // Try to get port info and format it for display
-                      let portInfo = "";
-                      try {
-                        if (port.getInfo) {
-                          const info = port.getInfo();
-                          if (info.usbVendorId) {
-                            portInfo = `${info.usbVendorId}:${info.usbProductId || 'N/A'}`;
-                          }
-                        }
-                      } catch (e) {
-                        console.error("Error getting port info:", e);
-                      }
-                      return (
-                        <DropdownItem
-                          key={`port-${index}`}
-                          onPress={() => {
-                            setSelectedPort(port);
-                            addToast({
-                              title: t("connectSuccess", "Connect Success"),
-                              description: `${t("connectSuccessDesc", "You have successfully connected to")} ${t("serialPort", "Serial Port")} ${index + 1}`,
-                              variant: "flat",
-                              timeout: 3000,
-                              shouldShowTimeoutProgess: true,
-                            });
-                          }}
-                        >
-                          {t("connectToPort", "Connect to Port")} {index + 1} {portInfo ? `(${portInfo})` : ''}
-                        </DropdownItem>
-                      );
-                    })}
-                  </Fragment>
-                ) : null} */}
                 <DropdownItem key="reload" onPress={handleReloadPortList}>
                   {t("reload", "Reload Port List")}
                 </DropdownItem>
@@ -236,7 +192,7 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
         </div>
 
         {/* Center - Connection Status with Icon */}
-        <div className="flex items-center justify-center">
+        {/* <div className="flex items-center justify-center">
           <Popover
             placement="bottom"
             classNames={{
@@ -274,7 +230,47 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
             <PopoverContent>
               <CardTitleDeviceDropList></CardTitleDeviceDropList>
             </PopoverContent>
-          </Popover>
+          </Popover> */}
+        <div className='flex items-center justify-center'>
+          <Select
+            size='sm'
+            className='min-w-[270px]'
+            color='default'
+            variant='bordered'
+            isDisabled={portList.length == 0}
+            placeholder={t("noConnectedDevices")}
+            selectedKeys={selectedKeys}
+            startContent={
+              (<div className={`
+                w-2 h-2 rounded-full 
+                ${selectedPort && openedPorts.has(selectedPort)
+                  ? 'bg-green-500 animate-pulse'
+                  : selectedPort
+                    ? 'bg-yellow-500 animate-pulse'
+                    : 'bg-red-500'
+                }
+                transition-colors duration-300
+              `}></div>)
+            }
+          >
+            {portList.map((port, index) => {
+              let portInfo = "";
+              try {
+                if (port.getInfo) {
+                  const info = port.getInfo();
+                  if (info.usbVendorId) {
+                    portInfo = `${info.usbVendorId}:${info.usbProductId || 'N/A'}`;
+                  }
+                }
+              } catch (e) {
+                console.error("Error getting port info:", e);
+              }
+              return (<SelectItem key={getDeviceName(port)}>
+                {getDeviceName(port)}
+              </SelectItem>)
+            }
+            )}
+          </Select>
         </div>
 
         <Button
@@ -292,6 +288,6 @@ export const CardContainer: React.FC<CardContainerProps> = ({ children, title = 
       <div className={`${isFullScreen ? 'h-[calc(100vh-56px)]' : 'h-[calc(80vh-56px)]'}`}>
         {children}
       </div>
-    </div>
+    </div >
   );
 };

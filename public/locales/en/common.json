@@ -1,12 +1,10 @@
 {
   "welcome": "Welcome to my website",
-  "label": {
-    "Filter": "Filter",
-    "Search": "Search",
-    "Port": "Port",
-    "BuadRate": "BuadRate",
-    "Level": "Level"
-  },
+  "Filter": "Filter",
+  "Search": "Search",
+  "Port": "Port",
+  "BuadRate": "BuadRate",
+  "Level": "Level",
   "selectPortToViewLogs": "Select a port to view logs",
   "noLogsAvailable": "No logs available for this port",
   "availableSerialPorts": "Available Serial Ports",
